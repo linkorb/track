@@ -14,7 +14,7 @@ use Track\Application;
 
 use RuntimeException;
 
-class ListCommand extends Command
+class LsCommand extends Command
 {
     /**
      * {@inheritdoc}
@@ -24,7 +24,7 @@ class ListCommand extends Command
         $this->ignoreValidationErrors();
 
         $this
-            ->setName('list')
+            ->setName('ls')
             ->setDescription('List logs')
             ->addOption(
                 'filter',

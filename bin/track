@@ -17,12 +17,12 @@ if (!file_exists($loader)) {
     );
 }
 
-require $loader;
+require_once($loader);
 
 $application = new Application('Track', '1.0.0');
 $application->setCatchExceptions(true);
 $application->add(new \Track\Command\LogCommand());
-$application->add(new \Track\Command\ListCommand());
+$application->add(new \Track\Command\LsCommand());
 $application->add(new \Track\Command\ViewCommand());
 $application->add(new \Track\Command\EditCommand());
 $application->add(new \Track\Command\EndCommand());
