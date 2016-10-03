@@ -67,15 +67,15 @@ class LogCommand extends Command
         $output->writeLn(
             "Logging a message: <info>" . $message . '</info>'
         );
-        
-        
+
+
         $repo = new JsonLogRepository();
         $id = $repo->getMaxId() + 1;
         $log = new Log();
         $log->setId($id);
         $now = new DateTime();
         $log->setCreatedAt($now);
-        
+
         while (!$message) {
             $question = new Question('<info>Message</info> (<comment>' . $log->getMessage() . '</comment>): ', $log->getMessage());
             $message = $helper->ask($input, $output, $question);
@@ -86,9 +86,9 @@ class LogCommand extends Command
         $question = new Question('<info>Started at</info> (<comment>' . $started->format('H:i') . '</comment>): ', $started->format('H:i'));
         $start  = $helper->ask($input, $output, $question);
         $log->setStartedAt($start);
-        
+
         $ended = new DateTime();
-        $question = new Question('<info>Started at</info> (<comment>' . $ended->format('H:i') . '</comment>): ', $ended->format('H:i'));
+        $question = new Question('<info>Ended at</info> (<comment>' . $ended->format('H:i') . '</comment>): ', $ended->format('H:i'));
         $end  = $helper->ask($input, $output, $question);
         $log->setEndedAt($end);
         /*
