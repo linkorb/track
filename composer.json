@@ -1,0 +1,25 @@
+{
+	"name": "linkorb/track",
+  "description": "Track: CLI Time-tracking",
+  "homepage": "https://github.com/linkorb/track",
+  "keywords": ["timetracking", "track", "activity", "tasks", "todo", "productivity", "linkorb"],
+  "type": "library",
+  "authors": [
+    {
+      "name": "Joost Faassen",
+      "email": "j.faassen@linkorb.com",
+      "role": "Development"
+    }
+  ],
+  "require": {
+    "symfony/console": "~2.7",
+    "symfony/process": "~2.7",
+    "symfony/yaml": "~2.7"
+  },
+  "autoload": {
+    "psr-4": {
+      "Track\\": "src/"
+    }
+  },
+  "license": "MIT"
+}
