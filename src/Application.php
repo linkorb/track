@@ -57,13 +57,12 @@ class Application
     
     public function formatDuration($duration)
     {
-        $o = '';
+        $minutes = 0;
         if ($duration->h) {
-            $o .= str_pad($duration->h, 2, ' ', STR_PAD_LEFT) . 'h';
-        } else {
-            $o .= '   ';
+            $minutes += $duration->h * 60;
         }
-        return $o .= str_pad($duration->i, 2, '0') . 'm';
+        $minutes += $duration->i;
+        return str_pad($minutes, 8, ' ', STR_PAD_LEFT) . 'm';
     }
     
     public function printLogs($logs)
@@ -109,13 +108,36 @@ class Application
         $lastDate = null;
         $categories = [];
         foreach ($logs as $log) {
-            $categories[] = $log->getCategory(); 
+            $categories[] = $log->getCategory();
         }
         $categories = array_unique($categories);
         asort($categories);
+
+        $x = [];
         foreach ($categories as $category) {
-            $this->reportCategory($category, $logs, $breakdown);
+            $duration = $this->getCategoryDuration($category, $logs);
+            $x[$category] = $duration;
         }
+        asort($x);
+        $x = array_reverse($x);
+        //print_r($x);exit();
+        foreach ($x as $name=>$value) {
+            $this->reportCategory($name, $logs, $breakdown);
+        }
+    }
+    
+    public function getCategoryDuration($category, $logs)
+    {
+        $e = new \DateTime('00:00');
+        foreach ($logs as $log) {
+            if ($log->getCategory()==$category) {
+                $e->add($log->getDuration());
+            }
+        }
+        $f = new \DateTime('00:00');
+        $diff = $f->diff($e);
+        $duration = 60*($diff->h) + $diff->i;
+        return (int)$duration;
     }
     
     public function reportCategory($category, $logs, $breakdown = false)
