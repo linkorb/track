@@ -38,6 +38,11 @@ You can specify any natural start/end time such as `11:20`, `-5 minutes`, `-1 ho
 
     track delete 12
     
+### Reporting activity
+
+    track report # show totals per category
+    track report -b # show --breakdown of logs per category
+    
 ## License
 
 MIT. Please refer to the [license file](LICENSE) for details.
