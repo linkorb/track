@@ -61,6 +61,11 @@ class LsCommand extends Command
         $app->printLogs($res);
         $f = new \DateTime('00:00');
         $diff = $f->diff($e);
-        $output->writeLn("Total: " . $diff->h . 'h' . $diff->i . 'm');
+        $output->write("Total: <comment>" . $diff->h . 'h' . $diff->i . 'm</comment>');
+        $max = $repo->getMaxDateTime();
+        $now = new \DateTime();
+        $diff = $now->diff($max);
+        $output->writeLn(" Pending: <comment>" . $diff->h . 'h' . $diff->i . 'm</comment>');
+        
     }
 }
