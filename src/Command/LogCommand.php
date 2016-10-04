@@ -78,7 +78,12 @@ class LogCommand extends Command
 
 
         $question = new Question('<info>Category</info> (<comment>' . $log->getCategory() . '</comment>): ', $log->getCategory());
-        $question->setAutocompleterValues($app->getCategories());
+        $categories = [];
+        foreach ($app->getCategories() as $c) {
+            $categories[] = $c->getName();
+        }
+        $question->setAutocompleterValues($categories);
+        
         $category = $helper->ask($input, $output, $question);
         $log->setCategory($category);
 

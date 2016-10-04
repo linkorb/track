@@ -2,12 +2,28 @@
 
 namespace Track;
 
+use Symfony\Component\Yaml\Yaml;
+use Track\Model\Category;
+use RuntimeException;
+
 class Application
 {
     protected $output;
+    protected $categories = [];
     public function __construct($output)
     {
         $this->output = $output;
+        $filename = $_SERVER['HOME'] . '/.track.yml';
+        if (!file_exists($filename)) {
+            throw new RuntimeException("Config file not found: " . $filename);
+        }
+        $yaml = file_get_contents($filename);
+        $data = Yaml::parse($yaml);
+        foreach ($data['categories'] as $name => $details) {
+            $category = new Category();
+            $category->setName($name);
+            $this->categories[$category->getName()] = $category;
+        }
     }
     
     public function printLog($log)
@@ -134,4 +150,8 @@ class Application
 
     }
     
+    public function getCategories()
+    {
+        return $this->categories;
+    }
 }
