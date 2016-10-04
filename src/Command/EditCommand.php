@@ -46,9 +46,16 @@ class EditCommand extends Command
         $id = $input->getArgument('id');
         $repo = new JsonLogRepository();
         $log = $repo->find($id);
-        //$app->printLog($log);
+        $app->printLog($log);
         //print_r($log);
+        
         $helper = $this->getHelper('question');
+
+        $question = new Question('<info>Category</info> (<comment>' . $log->getCategory() . '</comment>): ', $log->getCategory());
+        $question->setAutocompleterValues($app->getCategories());
+        $category = $helper->ask($input, $output, $question);
+        $log->setCategory($category);
+
         $question = new Question('<info>Message</info> (<comment>' . $log->getMessage() . '</comment>): ', $log->getMessage());
         $answer = $helper->ask($input, $output, $question);
         $log->setMessage($answer);

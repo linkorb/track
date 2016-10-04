@@ -12,9 +12,9 @@ class Application
     
     public function printLog($log)
     {
-        $this->output->writeLn(
-            "<info>" . str_pad($log->getId(), 4, ' ', STR_PAD_LEFT) . '</info>: <comment>' . $log->getMessage() . "</comment>"
-        );
+        // $this->output->writeLn(
+        //     "<info>" . str_pad($log->getId(), 4, ' ', STR_PAD_LEFT) . '</info>: <comment>' . $log->getMessage() . "</comment>"
+        // );
         
         $start = '?';
         if ($log->getStartedAt()) {
@@ -24,9 +24,30 @@ class Application
         if ($log->getEndedAt()) {
             $end = $log->getEndedAt()->format('H:i');
         }
+        
+        // $this->output->writeLn(
+        //     "      started: <comment>" . $start . '</comment> ended: <comment>' .  $end . '</comment> duration: <comment>' . $log->presentDuration() . '</comment>'
+        // );
+
         $this->output->writeLn(
-            "      started: <comment>" . $start . '</comment> ended: <comment>' .  $end . '</comment> duration: <comment>' . $log->presentDuration() . '</comment>'
+            '<info>' . str_pad($log->getId(), 4, ' ', STR_PAD_LEFT) . '</info> ' . 
+            '<comment>' . $start . '</comment> <comment>' .  $end . '</comment> ' .
+            '<comment>' . str_pad($log->presentDuration(), 6, ' ', STR_PAD_LEFT) . '</comment>' .
+            ' <info>' . str_pad($log->getCategory(), 20, ' ') . '</info>' .
+            '' . $log->getMessage() . ''
         );
+
+    }
+    
+    public function formatDuration($duration)
+    {
+        $o = '';
+        if ($duration->h) {
+            $o .= str_pad($duration->h, 2, ' ', STR_PAD_LEFT) . 'h';
+        } else {
+            $o .= '   ';
+        }
+        return $o .= str_pad($duration->i, 2, '0') . 'm';
     }
     
     public function printLogs($logs)
@@ -65,4 +86,52 @@ class Application
             }
         }
     }
+    
+    public function reportLogs($logs, $breakdown = false)
+    {
+        $lastEnded = null;
+        $lastDate = null;
+        $categories = [];
+        foreach ($logs as $log) {
+            $categories[] = $log->getCategory(); 
+        }
+        $categories = array_unique($categories);
+        asort($categories);
+        foreach ($categories as $category) {
+            $this->reportCategory($category, $logs, $breakdown);
+        }
+    }
+    
+    public function reportCategory($category, $logs, $breakdown = false)
+    {
+        $name = $category;
+        if (!$name) {
+            $name = 'No category';
+        }
+        $logCount = 0;
+        $e = new \DateTime('00:00');
+        foreach ($logs as $log) {
+            if ($log->getCategory()==$category) {
+                $e->add($log->getDuration());
+                $logCount ++;
+            }
+        }
+        $f = new \DateTime('00:00');
+        $diff = $f->diff($e);
+        $this->output->writeLn('<info>' . str_pad($name, 20, ' ') . '</info> ' . $this->formatDuration($diff) . ' x' . $logCount);
+
+        if ($breakdown) {
+            foreach ($logs as $log) {
+                if ($log->getCategory()==$category) {
+                    $c = '?';
+                    if ($log->getCreatedAt()) {
+                        $c = $log->getCreatedAt()->format('Y/m/d H:i');
+                    }
+                    $this->printLog($log);
+                }
+            }
+        }
+
+    }
+    
 }

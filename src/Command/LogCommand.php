@@ -76,12 +76,18 @@ class LogCommand extends Command
         $now = new DateTime();
         $log->setCreatedAt($now);
 
+
+        $question = new Question('<info>Category</info> (<comment>' . $log->getCategory() . '</comment>): ', $log->getCategory());
+        $question->setAutocompleterValues($app->getCategories());
+        $category = $helper->ask($input, $output, $question);
+        $log->setCategory($category);
+
         while (!$message) {
             $question = new Question('<info>Message</info> (<comment>' . $log->getMessage() . '</comment>): ', $log->getMessage());
             $message = $helper->ask($input, $output, $question);
         }
         $log->setMessage($message);
-
+        
         $started = $repo->getMaxDateTime();
         $question = new Question('<info>Started at</info> (<comment>' . $started->format('H:i') . '</comment>): ', $started->format('H:i'));
         $start  = $helper->ask($input, $output, $question);

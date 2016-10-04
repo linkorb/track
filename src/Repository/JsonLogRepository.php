@@ -28,6 +28,9 @@ class JsonLogRepository
             $log = new Log();
             $log->setId($data['id']);
             $log->setMessage($data['message']);
+            if (isset($data['category'])) {
+                $log->setCategory($data['category']);
+            }
             $log->setCreatedAt($this->parseDateTime($data['created_at']));
             $log->setStartedAt($this->parseDateTime($data['started_at']));
             $log->setEndedAt($this->parseDateTime($data['ended_at']));
@@ -108,6 +111,7 @@ class JsonLogRepository
         $data = [];
         $data['id'] = $log->getId();
         $data['message'] = $log->getMessage();
+        $data['category'] = $log->getCategory();
         $data['created_at'] = $this->formatDateTime($log->getCreatedAt());
         $data['started_at'] = $this->formatDateTime($log->getStartedAt());
         $data['ended_at'] = $this->formatDateTime($log->getEndedAt());
